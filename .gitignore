@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/com/shreyanshsinghks/newsappfk/utils/Constants.kt
+/app/src/main/java/com/shreyanshsinghks/newsappfk/utils
