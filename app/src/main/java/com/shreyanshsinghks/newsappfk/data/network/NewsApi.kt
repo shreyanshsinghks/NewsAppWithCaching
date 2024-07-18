@@ -14,6 +14,7 @@ interface NewsApi {
         @Query("language") language: String,
         @Query("text") text: String?,
         @Query("api-key") apiKey: String = API_KEY,
+        @Query("news-sources") newsSources: String? =  "https://www.bbc.co.uk"
 
     ): Response<NewsResponse>
 }
