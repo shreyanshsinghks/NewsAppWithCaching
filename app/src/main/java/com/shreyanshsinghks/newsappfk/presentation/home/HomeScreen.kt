@@ -2,6 +2,7 @@ package com.shreyanshsinghks.newsappfk.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,12 +35,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.shreyanshsinghks.newsappfk.data.model.News
 import com.shreyanshsinghks.newsappfk.presentation.State
+import com.shreyanshsinghks.newsappfk.utils.NavRoutes
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavHostController) {
     val uiState = viewModel.state.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
@@ -78,7 +81,10 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                         Text(text = "News")
                     }
                     items(data.news) { article ->
-                        NewsItem(news = article)
+                        NewsItem(news = article){
+                            val newsDetailsRoute = NavRoutes.createNewsDetailsRoute(article)
+                            navController.navigate(newsDetailsRoute)
+                        }
                     }
                 }
             }
@@ -103,7 +109,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 
 
 @Composable
-fun NewsItem(news: News) {
+fun NewsItem(news: News, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(vertical = 4.dp)
@@ -111,6 +117,7 @@ fun NewsItem(news: News) {
             .height(130.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.DarkGray.copy(alpha = 0.2f))
+            .clickable { onClick() }
     ) {
         if (!news.image.isNullOrBlank()) {
             AsyncImage(

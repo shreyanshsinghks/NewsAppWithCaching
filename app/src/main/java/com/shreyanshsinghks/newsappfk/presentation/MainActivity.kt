@@ -10,8 +10,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.shreyanshsinghks.newsappfk.presentation.home.HomeScreen
+import com.shreyanshsinghks.newsappfk.presentation.news_details.NewsDetailsScreen
 import com.shreyanshsinghks.newsappfk.ui.theme.NewsAppFKTheme
+import com.shreyanshsinghks.newsappfk.utils.NavRoutes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +28,17 @@ class MainActivity : ComponentActivity() {
             NewsAppFKTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Surface(modifier = Modifier.padding(innerPadding)) {
-                        HomeScreen()
+                        val navController = rememberNavController()
+                        NavHost(navController = navController, startDestination = "/home") {
+                            composable("/home") {
+                                HomeScreen(navController = navController)
+                            }
+                            composable("news_details/news={news}") { backStackEntry ->
+                                val newsJson = backStackEntry.arguments?.getString("news")
+                                val news = newsJson?.let { NavRoutes.getNewsFromRoute(it) }
+                                news?.let { NewsDetailsScreen(navController = navController, news = it) }
+                            }
+                        }
                     }
                 }
             }
