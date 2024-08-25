@@ -26,21 +26,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NewsAppFKTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Surface(modifier = Modifier.padding(innerPadding)) {
-                        val navController = rememberNavController()
-                        NavHost(navController = navController, startDestination = "/home") {
-                            composable("/home") {
-                                HomeScreen(navController = navController)
-                            }
-                            composable("news_details/news={news}") { backStackEntry ->
-                                val newsJson = backStackEntry.arguments?.getString("news")
-                                val news = newsJson?.let { NavRoutes.getNewsFromRoute(it) }
-                                news?.let { NewsDetailsScreen(navController = navController, news = it) }
-                            }
+
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "/home") {
+                    composable("/home") {
+                        HomeScreen(navController = navController)
+                    }
+                    composable("news_details/news={news}") { backStackEntry ->
+                        val newsJson = backStackEntry.arguments?.getString("news")
+                        val news = newsJson?.let { NavRoutes.getNewsFromRoute(it) }
+                        news?.let {
+                            NewsDetailsScreen(
+                                news = it,
+                                onBookmarkToggle = {},
+                                onBackPress = {
+                                    navController.navigateUp()
+                                })
                         }
                     }
                 }
+
             }
         }
     }

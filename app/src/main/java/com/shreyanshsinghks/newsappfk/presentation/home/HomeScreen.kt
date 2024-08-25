@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -46,62 +48,68 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavHos
     val uiState = viewModel.state.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
+    Scaffold { innerPadding ->
+        Surface(modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-    ) {
+            .padding(innerPadding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
 
-        SearchBar(text = searchText, onSearch = {
-            searchText = it
-            viewModel.getNews(it)
-        })
-        Spacer(modifier = Modifier.height(16.dp))
+                SearchBar(text = searchText, onSearch = {
+                    searchText = it
+                    viewModel.getNews(it)
+                })
+                Spacer(modifier = Modifier.height(16.dp))
 
-        when (uiState.value) {
-            is State.Loading -> {
-                // Show loading indicator
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator()
-                    Button(onClick = { viewModel.getNews() }) {
-                        Text(text = "Retry")
-                    }
-                }
-            }
-
-            is State.Success -> {
-                val data = (uiState.value as State.Success).data
-                // Show data
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    item {
-                        Text(text = "News")
-                    }
-                    items(data.news) { article ->
-                        NewsItem(news = article){
-                            val newsDetailsRoute = NavRoutes.createNewsDetailsRoute(article)
-                            navController.navigate(newsDetailsRoute)
+                when (uiState.value) {
+                    is State.Loading -> {
+                        // Show loading indicator
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
+                            Button(onClick = { viewModel.getNews() }) {
+                                Text(text = "Retry")
+                            }
                         }
                     }
-                }
-            }
 
-            is State.Error -> {
-                // Show error message
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(text = (uiState.value as State.Error).message)
-                    Button(onClick = { viewModel.getNews(searchText) }) {
-                        Text(text = "Retry")
+                    is State.Success -> {
+                        val data = (uiState.value as State.Success).data
+                        // Show data
+                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                            item {
+                                Text(text = "News")
+                            }
+                            items(data.news) { article ->
+                                NewsItem(news = article) {
+                                    val newsDetailsRoute = NavRoutes.createNewsDetailsRoute(article)
+                                    navController.navigate(newsDetailsRoute)
+                                }
+                            }
+                        }
+                    }
+
+                    is State.Error -> {
+                        // Show error message
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = (uiState.value as State.Error).message)
+                            Button(onClick = { viewModel.getNews(searchText) }) {
+                                Text(text = "Retry")
+                            }
+                        }
+
                     }
                 }
-
             }
         }
     }

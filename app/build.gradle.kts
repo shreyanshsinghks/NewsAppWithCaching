@@ -89,5 +89,6 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation(libs.okhttp)
+    implementation(libs.androidx.material.icons.extended)
 
 }
