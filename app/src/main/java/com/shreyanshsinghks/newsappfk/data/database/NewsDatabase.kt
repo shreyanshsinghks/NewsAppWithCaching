@@ -8,7 +8,7 @@ import com.shreyanshsinghks.newsappfk.data.dao.NewsDao
 import com.shreyanshsinghks.newsappfk.data.model.News
 
 
-@Database(entities = [News::class], version = 1, exportSchema = false)
+@Database(entities = [News::class], version = 1, exportSchema = true)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao
 

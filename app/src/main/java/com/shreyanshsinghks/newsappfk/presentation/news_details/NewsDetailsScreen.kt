@@ -1,6 +1,8 @@
 package com.shreyanshsinghks.newsappfk.presentation.news_details
 
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,17 +23,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.shreyanshsinghks.newsappfk.data.model.News
+import com.shreyanshsinghks.newsappfk.presentation.State
 
 @Composable
 fun NewsDetailsScreen(
@@ -40,6 +47,17 @@ fun NewsDetailsScreen(
     onBookmarkToggle: (Boolean) -> Unit
 ) {
     var isBookmarked by remember { mutableStateOf(false) }
+    val viewModel: NewsDetailsViewModel = hiltViewModel()
+    val state = viewModel.state.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(state) {
+        if (state.value is State.Success) {
+            Toast.makeText(context, "News saved successfully", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "${state.value}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -50,6 +68,9 @@ fun NewsDetailsScreen(
                 onBookmarkToggle = {
                     isBookmarked = !isBookmarked
                     onBookmarkToggle(isBookmarked)
+                    if (!isBookmarked) {
+                        viewModel.addNews(news = news)
+                    }
                 }
             )
         }
@@ -75,7 +96,7 @@ fun NewsTopAppBar(
     onBookmarkToggle: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis ) },
+        title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         navigationIcon = {
             IconButton(onClick = onBackPress) {
                 Icon(
@@ -85,7 +106,9 @@ fun NewsTopAppBar(
             }
         },
         actions = {
-            IconButton(onClick = onBookmarkToggle) {
+            IconButton(onClick = onBookmarkToggle, modifier = Modifier.clickable {
+
+            }) {
                 Icon(
                     imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
                     contentDescription = if (isBookmarked) "Remove Bookmark" else "Add Bookmark"

@@ -82,8 +82,8 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // Retrofit for network requests
     implementation (libs.retrofit)
