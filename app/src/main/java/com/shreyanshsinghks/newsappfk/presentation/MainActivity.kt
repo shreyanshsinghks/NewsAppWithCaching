@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.shreyanshsinghks.newsappfk.presentation.bookmarks.BookmarkScreen
 import com.shreyanshsinghks.newsappfk.presentation.home.HomeScreen
 import com.shreyanshsinghks.newsappfk.presentation.news_details.NewsDetailsScreen
 import com.shreyanshsinghks.newsappfk.ui.theme.NewsAppFKTheme
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
             NewsAppFKTheme {
 
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "/home") {
+                NavHost(navController = navController, startDestination = "/bookmarks") {
                     composable("/home") {
                         HomeScreen(navController = navController)
                     }
@@ -43,6 +44,9 @@ class MainActivity : ComponentActivity() {
                                     navController.navigateUp()
                                 })
                         }
+                    }
+                    composable("/bookmarks"){
+                        BookmarkScreen(navHostController = navController)
                     }
                 }
 

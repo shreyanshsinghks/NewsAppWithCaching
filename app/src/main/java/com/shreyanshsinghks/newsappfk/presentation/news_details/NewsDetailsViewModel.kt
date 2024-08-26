@@ -32,4 +32,10 @@ class NewsDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteBookmark(news: News) {
+        viewModelScope.launch {
+            newsDao.deleteNews(news = news)
+        }
+    }
 }

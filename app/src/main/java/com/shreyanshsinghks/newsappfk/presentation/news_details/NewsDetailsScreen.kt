@@ -68,8 +68,10 @@ fun NewsDetailsScreen(
                 onBookmarkToggle = {
                     isBookmarked = !isBookmarked
                     onBookmarkToggle(isBookmarked)
-                    if (!isBookmarked) {
+                    if (isBookmarked) {
                         viewModel.addNews(news = news)
+                    } else {
+                        viewModel.deleteBookmark(news = news)
                     }
                 }
             )
