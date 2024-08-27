@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shreyanshsinghks.newsappfk.data.model.News
-import com.shreyanshsinghks.newsappfk.presentation.home.NewsItem
+import com.shreyanshsinghks.newsappfk.presentation.home.NewsItemHome
 import com.shreyanshsinghks.newsappfk.utils.NavRoutes
 
 
@@ -53,9 +53,10 @@ fun BookmarkScreen(navHostController: NavHostController) {
 fun NewsListView(news: List<News>, onClick: (News) -> Unit) {
     LazyColumn {
         items(news) { article ->
-            NewsItem(news = article) {
+            NewsItemHome(news = article) {
                 onClick(article)
             }
+            Spacer(modifier = Modifier.size(16.dp))
         }
     }
 }
