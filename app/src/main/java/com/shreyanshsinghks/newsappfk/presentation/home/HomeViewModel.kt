@@ -1,9 +1,7 @@
 package com.shreyanshsinghks.newsappfk.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shreyanshsinghks.newsappfk.data.model.News
 import com.shreyanshsinghks.newsappfk.data.response.NewsResponse
 import com.shreyanshsinghks.newsappfk.domain.usecase.GetNewsUseCase
 import com.shreyanshsinghks.newsappfk.presentation.State
@@ -32,7 +30,6 @@ class HomeViewModel @Inject constructor(private val getNewsUseCase: GetNewsUseCa
             try {
                 val result = getNewsUseCase.invoke("en", text, country)
                 _state.tryEmit(State.Success(result))
-                Log.d("News", "getNews: ${result.number}")
             } catch (e: Exception) {
                 _state.tryEmit(State.Error(e.message.toString()))
             }

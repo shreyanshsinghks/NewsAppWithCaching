@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.shreyanshsinghks.newsappfk.data.model.News
 import com.shreyanshsinghks.newsappfk.presentation.State
+import com.shreyanshsinghks.newsappfk.presentation.bookmarks.BookmarkViewModel
 
 @Composable
 fun NewsDetailsScreen(
@@ -46,7 +47,11 @@ fun NewsDetailsScreen(
     onBackPress: () -> Unit,
     onBookmarkToggle: (Boolean) -> Unit
 ) {
-    var isBookmarked by remember { mutableStateOf(false) }
+    val bookMarkViewModel: BookmarkViewModel = hiltViewModel()
+    val bookMarkState = bookMarkViewModel.getBookmarks().collectAsState(initial = listOf())
+    var isBookmarked = remember(bookMarkState.value) {
+        bookMarkState.value.any { it.title == news.title }
+    }
     val viewModel: NewsDetailsViewModel = hiltViewModel()
     val state = viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -55,7 +60,7 @@ fun NewsDetailsScreen(
         if (state.value is State.Success) {
             Toast.makeText(context, "News saved successfully", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "${state.value}", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "${state.value}", Toast.LENGTH_SHORT).show()
         }
     }
 
